@@ -105,29 +105,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 
 
-# async def startEngine(connectionstring, makeDrop=False, makeUp=True):
-#     """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
-#     asyncEngine = create_async_engine(connectionstring, echo = True)
-    
-#     async with asyncEngine.begin() as conn:
-#         if makeDrop:
-#             await conn.run_sync(BaseModel.metadata.drop_all)
-#             print("BaseModel.metadata.drop_all finished")
-#         if makeUp:
-#             await conn.run_sync(BaseModel.metadata.create_all)
-#             print("BaseModel.metadata.create_all finished")
-
-#     async_sessionMaker = sessionmaker(
-#         asyncEngine, expire_on_commit=False, class_=AsyncSession
-#     )
-#     return async_sessionMaker
-
-import time
-
 async def startEngine(connectionstring, makeDrop=False, makeUp=True):
     """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
     asyncEngine = create_async_engine(connectionstring, echo = True)
-    
     
     async with asyncEngine.begin() as conn:
         if makeDrop:
@@ -136,19 +116,39 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
         if makeUp:
             await conn.run_sync(BaseModel.metadata.create_all)
             print("BaseModel.metadata.create_all finished")
-        start_time = time.perf_counter()
-        async for row in conn.execute(query):
-            # Process each row asynchronously (optional)
-            pass
-        end_time = time.perf_counter()
-
-        await asyncEngine.dispose()  # Close the connection pool
-        print(f"Query execution time: {end_time - start_time:.4f} seconds")
 
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )
     return async_sessionMaker
+
+# import time
+
+# async def startEngine(connectionstring, makeDrop=False, makeUp=True):
+#     """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
+#     asyncEngine = create_async_engine(connectionstring, echo = True)
+    
+    
+#     async with asyncEngine.begin() as conn:
+#         if makeDrop:
+#             await conn.run_sync(BaseModel.metadata.drop_all)
+#             print("BaseModel.metadata.drop_all finished")
+#         if makeUp:
+#             await conn.run_sync(BaseModel.metadata.create_all)
+#             print("BaseModel.metadata.create_all finished")
+#         start_time = time.perf_counter()
+#         async for row in conn.execute(query):
+#             # Process each row asynchronously (optional)
+#             pass
+#         end_time = time.perf_counter()
+
+#         await asyncEngine.dispose()  # Close the connection pool
+#         print(f"Query execution time: {end_time - start_time:.4f} seconds")
+
+#     async_sessionMaker = sessionmaker(
+#         asyncEngine, expire_on_commit=False, class_=AsyncSession
+#     )
+#     return async_sessionMaker
 
 
 import os
